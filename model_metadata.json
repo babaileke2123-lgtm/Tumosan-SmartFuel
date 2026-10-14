@@ -1,0 +1,34 @@
+{
+  "project": "T\u00fcmosan 81.110 tractor fuel-rate prediction",
+  "features": [
+    "EngineSpeed",
+    "ActualEngine_PercTorque",
+    "WheelBasedVehicleSpeed"
+  ],
+  "target": "EngFuelRate",
+  "target_unit": "L/h (provisional; verify dataset metadata)",
+  "selected_model": "Random Forest (leaf 15)",
+  "train_rows": 33772,
+  "validation_rows": 7237,
+  "test_rows": 7238,
+  "trainval_feature_ranges": {
+    "EngineSpeed": {
+      "min": 0.0,
+      "max": 2496.0
+    },
+    "ActualEngine_PercTorque": {
+      "min": 0.0,
+      "max": 101.0
+    },
+    "WheelBasedVehicleSpeed": {
+      "min": 0.0,
+      "max": 10.0
+    }
+  },
+  "final_test_metrics": {
+    "R2": 0.9752769676205505,
+    "MAE": 0.416123071506295,
+    "MSE": 0.9430911204509709,
+    "RMSE": 0.971128786748169
+  }
+}
