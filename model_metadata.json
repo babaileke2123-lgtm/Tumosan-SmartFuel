@@ -6,7 +6,7 @@
     "WheelBasedVehicleSpeed"
   ],
   "target": "EngFuelRate",
-  "target_unit": "L/h (provisional; verify dataset metadata)",
+  "target_unit": "L/h (confirmed in supplied signal documentation, PGN 65266 / SPN 183)",
   "selected_model": "Random Forest (leaf 15)",
   "train_rows": 33772,
   "validation_rows": 7237,
@@ -30,5 +30,10 @@
     "MAE": 0.416123071506295,
     "MSE": 0.9430911204509709,
     "RMSE": 0.971128786748169
+  },
+  "feature_units": {
+    "EngineSpeed": "rpm",
+    "ActualEngine_PercTorque": "%",
+    "WheelBasedVehicleSpeed": "km/h"
   }
 }
