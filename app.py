@@ -6,7 +6,7 @@ import pandas as pd
 import streamlit as st
 import plotly.express as px
 
-st.set_page_config(page_title='FuelPulse AI | Tractor Fuel Analytics', page_icon='💚', layout='wide')
+st.set_page_config(page_title='FuelPulse AI | Tractor Fuel Analytics', page_icon='🚜', layout='wide')
 BASE = Path(__file__).resolve().parent
 FEATURES = ['EngineSpeed', 'ActualEngine_PercTorque', 'WheelBasedVehicleSpeed']
 TARGET = 'EngFuelRate'
@@ -25,47 +25,64 @@ metadata = json.loads((BASE / 'model_metadata.json').read_text(encoding='utf-8')
 # FuelPulse AI visual system. The model and recorded data are unchanged.
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
-:root { --fp-forest:#153D32; --fp-emerald:#218B63; --fp-cream:#F5F8F5; --fp-text:#25362F; }
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap');
+:root { --fp-blue:#075bea; --fp-navy:#0a285a; --fp-light:#f5f9ff; }
 html, body, [class*="css"], [data-testid="stApp"], [data-testid="stSidebar"],
-button, input, textarea, select, label, p, span, div { font-family:'Montserrat',sans-serif; }
-[data-testid="stAppViewContainer"] { background:linear-gradient(180deg,#F5F8F5 0%,#FFFFFF 45%); }
-[data-testid="stSidebar"] { background:#EEF5F0; border-right:1px solid #DDE8E0; }
-[data-testid="stSidebar"] * { font-family:'Montserrat',sans-serif; }
+button, input, textarea, select, label, p, span, div { font-family:'Roboto',Arial,sans-serif; }
+[data-testid="stAppViewContainer"] { background:linear-gradient(180deg,#f7fbff 0%,#ffffff 48%); }
+[data-testid="stSidebar"] { background:#f2f7fe; border-right:1px solid #dce8f9; }
+[data-testid="stSidebar"] * { font-family:'Roboto',Arial,sans-serif; }
 .block-container { padding-top:1.5rem; padding-bottom:3rem; max-width:1320px; }
-h1,h2,h3,h4 { color:#153D32 !important; font-family:'Montserrat',sans-serif !important; letter-spacing:-.025em; }
-h1 { font-weight:800 !important; } h2,h3 { font-weight:700 !important; }
-[data-testid="stMetric"] { background:#FFFFFF; border:1px solid #DDE8E0; border-radius:16px; padding:18px 20px; box-shadow:0 5px 20px rgba(21,61,50,.04); }
-[data-testid="stMetricLabel"] { color:#546C5F; font-weight:600; }
-[data-testid="stMetricValue"] { color:#153D32; font-weight:800; }
-.stButton > button[kind="primary"] { background:#218B63; border-color:#218B63; color:white; font-weight:700; border-radius:11px; }
-.stButton > button { border-radius:11px; font-weight:600; }
-[data-testid="stAlert"] { border-radius:12px; }
-[data-testid="stPlotlyChart"] { background:white; border:1px solid #E4ECE6; border-radius:16px; padding:6px; }
-.fp-hero { background:linear-gradient(115deg,#153D32,#22694E); padding:29px 32px; border-radius:20px; margin-bottom:18px; color:#FFFFFF; }
-.fp-kicker { color:#B5E5C7; text-transform:uppercase; letter-spacing:.14em; font-size:.70rem; font-weight:700; margin:0 0 8px; }
-.fp-title { font-size:clamp(2rem,4vw,3.15rem); font-weight:800; letter-spacing:-.04em; line-height:1.1; margin:0; color:white; }
-.fp-subtitle { font-size:.97rem; color:#D8EDE0; margin:13px 0 0; line-height:1.65; }
-.fp-pill { display:inline-block; border:1px solid #79BA97; color:#D7F5E4; padding:6px 11px; border-radius:99px; margin-top:17px; font-size:.72rem; font-weight:600; }
-.fp-note { color:#62786B; font-size:.78rem; margin:0 0 20px; line-height:1.7; }
-@media(max-width:700px){ .fp-hero{padding:22px 20px;} .block-container{padding-left:1rem;padding-right:1rem;} }
+h1,h2,h3,h4 { color:#0a285a !important; font-family:'Roboto',Arial,sans-serif !important; letter-spacing:-.018em; }
+h1 { font-weight:900 !important; } h2,h3 { font-weight:800 !important; }
+[data-testid="stMetric"] { background:#f1f7ff; border:1px solid #d9e9ff; border-radius:13px; padding:18px 20px; box-shadow:0 4px 18px rgba(8,63,139,.035); }
+[data-testid="stMetricLabel"] { color:#35527a; font-weight:600; }
+[data-testid="stMetricValue"] { color:#075bea; font-weight:800; }
+.stButton > button[kind="primary"] { background:#075bea; border-color:#075bea; color:white; font-weight:700; border-radius:9px; }
+.stButton > button { border-radius:9px; font-weight:600; }
+.stButton > button:hover { border-color:#075bea; color:#075bea; }
+.stButton > button[kind="primary"]:hover { background:#064bc2; color:white; }
+[data-testid="stAlert"] { border-radius:11px; }
+[data-testid="stPlotlyChart"] { background:white; border:1px solid #dce8f9; border-radius:13px; padding:6px; }
+.fp-hero { background:linear-gradient(110deg,#0a3268 0%,#07559d 56%,#1573b5 100%); padding:31px 34px; border-radius:18px; margin-bottom:18px; color:#fff; box-shadow:0 8px 25px rgba(5,59,125,.1); }
+.fp-kicker { color:#c5e0ff; text-transform:uppercase; letter-spacing:.16em; font-size:.75rem; font-weight:800; margin:0 0 9px; }
+.fp-title { font-size:clamp(2.3rem,4.5vw,3.7rem); font-weight:900; letter-spacing:-.045em; line-height:1.07; margin:0; color:white; }
+.fp-subtitle { font-size:1.02rem; color:#e4f0ff; margin:14px 0 0; line-height:1.6; }
+.fp-pill { display:inline-block; border:1px solid #8dbff0; color:#f0f7ff; padding:7px 13px; border-radius:99px; margin-top:19px; font-size:.78rem; font-weight:600; }
+.fp-note { color:#486482; font-size:.85rem; margin:0 0 23px; line-height:1.7; }
+.fp-credit { background:#f1f7ff; border:1px solid #dce8f9; padding:20px 24px; border-radius:13px; line-height:1.7; color:#24456d; }
+.fp-credit a { color:#075bea; }
+@media(max-width:700px){ .fp-hero{padding:23px 20px;} .block-container{padding-left:1rem;padding-right:1rem;} }
 </style>
 """, unsafe_allow_html=True)
 
-# Consistent Plotly chart palette (no changes to chart data).
+# Blue chart system: chart content, inputs, and model remain unchanged.
 px.defaults.template = 'plotly_white'
-px.defaults.color_discrete_sequence = ['#218B63', '#E4A647', '#3576A8', '#7D6AAF']
+px.defaults.color_discrete_sequence = ['#075bea', '#40a1ff', '#173f85', '#84c5ff']
+
+def style_chart(fig):
+    fig.update_layout(
+        font=dict(family='Roboto, Arial, sans-serif', color='#173b6c', size=13),
+        title_font=dict(size=17, color='#0a285a'),
+        paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='#ffffff',
+        colorway=['#075bea', '#40a1ff', '#173f85', '#84c5ff'],
+        margin=dict(l=28, r=22, t=55, b=35),
+        legend=dict(orientation='h', yanchor='bottom', y=1.02, xanchor='right', x=1),
+    )
+    fig.update_xaxes(showgrid=True, gridcolor='#e4eefb', zeroline=False, title_font=dict(size=13))
+    fig.update_yaxes(showgrid=True, gridcolor='#e4eefb', zeroline=False, title_font=dict(size=13))
+    return fig
 
 st.markdown("""
 <div class="fp-hero">
   <div class="fp-kicker">Agricultural machinery intelligence</div>
-  <div class="fp-title">◉ FuelPulse AI</div>
+  <div class="fp-title">🚜 FuelPulse AI</div>
   <p class="fp-subtitle">Intelligent tractor fuel prediction, analytics &amp; recorded-data playback.</p>
-  <span class="fp-pill">Machine learning powered · Research demonstration</span>
+  <span class="fp-pill">Machine Learning &nbsp;·&nbsp; Tractor Analytics &nbsp;·&nbsp; Research Demonstration</span>
 </div>
 <div class="fp-note">Model developed using Tümosan 81.110 soil-tillage CAN-bus data. Documented units: fuel rate L/h (SPN 183), vehicle speed km/h (SPN 84), engine speed rpm (SPN 190), and torque %.</div>
 """, unsafe_allow_html=True)
-st.sidebar.markdown('### ◉ FuelPulse AI')
+st.sidebar.markdown('### 🚜 FuelPulse AI')
 st.sidebar.caption('Tractor fuel analytics')
 page = st.sidebar.radio('Navigate', ['Manual Fuel Prediction', 'Interactive Dashboard', 'Live Playback Monitor', 'Model & Methodology'])
 
@@ -93,8 +110,9 @@ if page == 'Manual Fuel Prediction':
     rpm_values = np.linspace(600, 2400, 30)
     scenarios = pd.DataFrame({'EngineSpeed':rpm_values,'ActualEngine_PercTorque':torque,'WheelBasedVehicleSpeed':speed})
     scenarios['Predicted fuel rate'] = np.maximum(0,model.predict(scenarios))
-    fig = px.line(scenarios, x='EngineSpeed', y='Predicted fuel rate', labels={'EngineSpeed':'Engine speed (rpm)','Predicted fuel rate':'Predicted fuel rate (L/h)'})
-    st.plotly_chart(fig, use_container_width=True)
+    fig = px.line(scenarios, x='EngineSpeed', y='Predicted fuel rate', labels={'EngineSpeed':'Engine speed (rpm)','Predicted fuel rate':'Predicted fuel rate (L/h)'}, markers=True)
+    fig.update_traces(line=dict(width=3))
+    st.plotly_chart(style_chart(fig), use_container_width=True)
     st.caption('Scenario curve holds torque and travel speed fixed; changing one parameter does not prove a causal fuel saving.')
 
 elif page == 'Interactive Dashboard':
@@ -120,12 +138,12 @@ elif page == 'Interactive Dashboard':
     if sample.empty:
         st.warning('No observations in this interval.')
     else:
-        st.plotly_chart(px.line(sample.iloc[::max(1,len(sample)//2500)], x='Elapsed time (min)', y=chosen, title=f'{chosen} over time', labels={chosen:f'{chosen} ({units[chosen]})'}), use_container_width=True)
+        st.plotly_chart(style_chart(px.line(sample.iloc[::max(1,len(sample)//2500)], x='Elapsed time (min)', y=chosen, title=f'{chosen} over time', labels={chosen:f'{chosen} ({units[chosen]})'})), use_container_width=True)
         left,right = st.columns(2)
         with left:
-            st.plotly_chart(px.histogram(sample, x=chosen, nbins=50, title='Distribution', labels={chosen:f'{chosen} ({units[chosen]})'}),use_container_width=True)
+            st.plotly_chart(style_chart(px.histogram(sample, x=chosen, nbins=50, title='Distribution', labels={chosen:f'{chosen} ({units[chosen]})'})),use_container_width=True)
         with right:
-            st.plotly_chart(px.scatter(sample.iloc[::max(1,len(sample)//2000)],x=chosen if chosen!=TARGET else 'EngineSpeed',y=TARGET,opacity=0.4,title='Relationship with fuel rate', labels={TARGET:'Engine fuel rate (L/h)',chosen:f'{chosen} ({units[chosen]})'}),use_container_width=True)
+            st.plotly_chart(style_chart(px.scatter(sample.iloc[::max(1,len(sample)//2000)],x=chosen if chosen!=TARGET else 'EngineSpeed',y=TARGET,opacity=0.4,title='Relationship with fuel rate', labels={TARGET:'Engine fuel rate (L/h)',chosen:f'{chosen} ({units[chosen]})'})),use_container_width=True)
         st.subheader('Descriptive statistics')
         st.dataframe(sample[columns].describe().T.round(3),use_container_width=True)
         st.subheader('Correlation matrix')
@@ -146,7 +164,16 @@ elif page == 'Model & Methodology':
         st.dataframe(preds.head(25),use_container_width=True)
         st.download_button('Download test predictions',preds.to_csv(index=False),file_name='test_predictions.csv',mime='text/csv')
     st.warning('Results describe a later portion of the same recording. They do not validate performance on new tractors, fields or seasons. The model is not a causal simulator.')
-    st.info('Dataset credit: Tümosan 81.110 tractor soil-tillage CAN-bus dataset, shared by Ali Can Tellioğlu and research collaborators. Add the full publication citation once verified. FuelPulse AI is an independent student-developed research application, not an official Tümosan product.')
+    st.subheader('Dataset Credits & Licensing')
+    st.markdown("""
+    <div class="fp-credit">
+      <strong>Data source.</strong> FuelPulse AI uses recorded CAN-bus operating measurements from a Tümosan 81.110 tractor during soil tillage operations, including engine speed, engine torque, vehicle speed, and fuel consumption rate.<br><br>
+      <strong>Original researchers.</strong> A. Dana, O. Özener, and A. C. Tellioğlu. We acknowledge their contribution in making these research data available.<br><br>
+      <strong>Research publication.</strong> <em>Data in Brief</em>, Elsevier (2026). <a href="https://doi.org/10.1016/j.dib.2026.113244" target="_blank">DOI: 10.1016/j.dib.2026.113244</a>.<br><br>
+      <strong>Publication licence.</strong> <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">Creative Commons Attribution 4.0 International (CC BY 4.0)</a>. Refer to the original publication and dataset record for applicable reuse terms.<br><br>
+      <strong>Adaptation and independence.</strong> Recorded data were processed for machine-learning fuel-rate prediction and visualisation. FuelPulse AI is an independent academic research demonstration, not an official Tümosan product and not endorsed by the original researchers.
+    </div>
+    """, unsafe_allow_html=True)
 
 
 else:
@@ -208,9 +235,10 @@ else:
         visible = test.iloc[max(0,i-1199):i+1: max(1,(i-max(0,i-1199))//600)]
         chart = px.line(visible, x='Elapsed time (min)', y=['Actual fuel rate (L/h)','Predicted fuel rate (L/h)'], labels={'value':'Fuel rate (L/h)','variable':'Series'}, title='Recorded versus predicted engine fuel rate')
         chart.update_layout(legend_title_text='Series')
-        st.plotly_chart(chart, use_container_width=True)
+        chart.update_traces(line=dict(width=2.5))
+        st.plotly_chart(style_chart(chart), use_container_width=True)
         pred_chart = px.line(visible, x='Elapsed time (min)', y='Predicted fuel rate (L/h)', title='Predicted fuel rate over time', labels={'Predicted fuel rate (L/h)':'Predicted fuel rate (L/h)'})
-        st.plotly_chart(pred_chart, use_container_width=True)
+        st.plotly_chart(style_chart(pred_chart), use_container_width=True)
         with st.expander('Current observation and source data'):
             st.dataframe(test.iloc[[i]][['time_ms']+FEATURES+[TARGET,'Predicted fuel rate (L/h)']],hide_index=True,use_container_width=True)
         st.caption('Fuel-volume estimate integrates predicted fuel rate over the recorded timestamps. It is not a measured fuel-volume reading.')
