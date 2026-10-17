@@ -233,11 +233,11 @@ else:
         c.metric('Estimated fuel since replay start', f'{current["Estimated fuel used (L)"]:.3f} L')
         # Plot recent history; restrict point count to keep the web UI responsive.
         visible = test.iloc[max(0,i-1199):i+1: max(1,(i-max(0,i-1199))//600)]
-        chart = px.line(visible, x='Elapsed time (min)', y=['Actual fuel rate (L/h)','Predicted fuel rate (L/h)'], labels={'value':'Fuel rate (L/h)','variable':'Series'}, title='Recorded versus predicted engine fuel rate')
+        chart = px.line(visible, x='Elapsed time (min)', y=['Actual fuel rate (L/h)','Predicted fuel rate (L/h)'], labels={'value':'Fuel rate (L/h)','variable':'Series'}, title='Recorded versus predicted engine fuel rate', color_discrete_map={'Actual fuel rate (L/h)': '#075bea', 'Predicted fuel rate (L/h)': '#f59e0b'})
         chart.update_layout(legend_title_text='Series')
         chart.update_traces(line=dict(width=2.5))
         st.plotly_chart(style_chart(chart), use_container_width=True)
-        pred_chart = px.line(visible, x='Elapsed time (min)', y='Predicted fuel rate (L/h)', title='Predicted fuel rate over time', labels={'Predicted fuel rate (L/h)':'Predicted fuel rate (L/h)'})
+        pred_chart = px.line(visible, x='Elapsed time (min)', y='Predicted fuel rate (L/h)', title='Predicted fuel rate over time', labels={'Predicted fuel rate (L/h)':'Predicted fuel rate (L/h)'}, color_discrete_sequence=['#f59e0b'])
         st.plotly_chart(style_chart(pred_chart), use_container_width=True)
         with st.expander('Current observation and source data'):
             st.dataframe(test.iloc[[i]][['time_ms']+FEATURES+[TARGET,'Predicted fuel rate (L/h)']],hide_index=True,use_container_width=True)
