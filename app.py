@@ -6,7 +6,7 @@ import pandas as pd
 import streamlit as st
 import plotly.express as px
 
-st.set_page_config(page_title='Tümosan SmartFuel', page_icon='🚜', layout='wide')
+st.set_page_config(page_title='FuelPulse AI | Tractor Fuel Analytics', page_icon='💚', layout='wide')
 BASE = Path(__file__).resolve().parent
 FEATURES = ['EngineSpeed', 'ActualEngine_PercTorque', 'WheelBasedVehicleSpeed']
 TARGET = 'EngFuelRate'
@@ -22,9 +22,51 @@ def load_data():
 
 model = load_model()
 metadata = json.loads((BASE / 'model_metadata.json').read_text(encoding='utf-8'))
-st.title('🚜 Tümosan SmartFuel')
-st.caption('Fuel consumption prediction and monitoring • Tümosan 81.110 soil tillage CAN-bus data')
-st.caption('Units confirmed from supplied CAN-bus signal documentation: fuel rate L/h (SPN 183), speed km/h (SPN 84), engine speed rpm (SPN 190), torque %.')
+# FuelPulse AI visual system. The model and recorded data are unchanged.
+st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
+:root { --fp-forest:#153D32; --fp-emerald:#218B63; --fp-cream:#F5F8F5; --fp-text:#25362F; }
+html, body, [class*="css"], [data-testid="stApp"], [data-testid="stSidebar"],
+button, input, textarea, select, label, p, span, div { font-family:'Montserrat',sans-serif; }
+[data-testid="stAppViewContainer"] { background:linear-gradient(180deg,#F5F8F5 0%,#FFFFFF 45%); }
+[data-testid="stSidebar"] { background:#EEF5F0; border-right:1px solid #DDE8E0; }
+[data-testid="stSidebar"] * { font-family:'Montserrat',sans-serif; }
+.block-container { padding-top:1.5rem; padding-bottom:3rem; max-width:1320px; }
+h1,h2,h3,h4 { color:#153D32 !important; font-family:'Montserrat',sans-serif !important; letter-spacing:-.025em; }
+h1 { font-weight:800 !important; } h2,h3 { font-weight:700 !important; }
+[data-testid="stMetric"] { background:#FFFFFF; border:1px solid #DDE8E0; border-radius:16px; padding:18px 20px; box-shadow:0 5px 20px rgba(21,61,50,.04); }
+[data-testid="stMetricLabel"] { color:#546C5F; font-weight:600; }
+[data-testid="stMetricValue"] { color:#153D32; font-weight:800; }
+.stButton > button[kind="primary"] { background:#218B63; border-color:#218B63; color:white; font-weight:700; border-radius:11px; }
+.stButton > button { border-radius:11px; font-weight:600; }
+[data-testid="stAlert"] { border-radius:12px; }
+[data-testid="stPlotlyChart"] { background:white; border:1px solid #E4ECE6; border-radius:16px; padding:6px; }
+.fp-hero { background:linear-gradient(115deg,#153D32,#22694E); padding:29px 32px; border-radius:20px; margin-bottom:18px; color:#FFFFFF; }
+.fp-kicker { color:#B5E5C7; text-transform:uppercase; letter-spacing:.14em; font-size:.70rem; font-weight:700; margin:0 0 8px; }
+.fp-title { font-size:clamp(2rem,4vw,3.15rem); font-weight:800; letter-spacing:-.04em; line-height:1.1; margin:0; color:white; }
+.fp-subtitle { font-size:.97rem; color:#D8EDE0; margin:13px 0 0; line-height:1.65; }
+.fp-pill { display:inline-block; border:1px solid #79BA97; color:#D7F5E4; padding:6px 11px; border-radius:99px; margin-top:17px; font-size:.72rem; font-weight:600; }
+.fp-note { color:#62786B; font-size:.78rem; margin:0 0 20px; line-height:1.7; }
+@media(max-width:700px){ .fp-hero{padding:22px 20px;} .block-container{padding-left:1rem;padding-right:1rem;} }
+</style>
+""", unsafe_allow_html=True)
+
+# Consistent Plotly chart palette (no changes to chart data).
+px.defaults.template = 'plotly_white'
+px.defaults.color_discrete_sequence = ['#218B63', '#E4A647', '#3576A8', '#7D6AAF']
+
+st.markdown("""
+<div class="fp-hero">
+  <div class="fp-kicker">Agricultural machinery intelligence</div>
+  <div class="fp-title">◉ FuelPulse AI</div>
+  <p class="fp-subtitle">Intelligent tractor fuel prediction, analytics &amp; recorded-data playback.</p>
+  <span class="fp-pill">Machine learning powered · Research demonstration</span>
+</div>
+<div class="fp-note">Model developed using Tümosan 81.110 soil-tillage CAN-bus data. Documented units: fuel rate L/h (SPN 183), vehicle speed km/h (SPN 84), engine speed rpm (SPN 190), and torque %.</div>
+""", unsafe_allow_html=True)
+st.sidebar.markdown('### ◉ FuelPulse AI')
+st.sidebar.caption('Tractor fuel analytics')
 page = st.sidebar.radio('Navigate', ['Manual Fuel Prediction', 'Interactive Dashboard', 'Live Playback Monitor', 'Model & Methodology'])
 
 if page == 'Manual Fuel Prediction':
@@ -104,6 +146,7 @@ elif page == 'Model & Methodology':
         st.dataframe(preds.head(25),use_container_width=True)
         st.download_button('Download test predictions',preds.to_csv(index=False),file_name='test_predictions.csv',mime='text/csv')
     st.warning('Results describe a later portion of the same recording. They do not validate performance on new tractors, fields or seasons. The model is not a causal simulator.')
+    st.info('Dataset credit: Tümosan 81.110 tractor soil-tillage CAN-bus dataset, shared by Ali Can Tellioğlu and research collaborators. Add the full publication citation once verified. FuelPulse AI is an independent student-developed research application, not an official Tümosan product.')
 
 
 else:
